@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block app_content %}
+
+
+
+
+<form method="post", action="">
+    {{ indexForm.hidden_tag() }}
+    {{ indexForm.date() }}
+    {{ indexForm.submitDate() }}
+    <datalist id="db_dates">
+        {% for date in dates %}
+            </option value="{{ date.day }}">
+        {% endfor %}
+    </datalist>
+</form>
+
+    {% if current_user.is_anonymous %}
+    <table class="table table-hover">
+        <tr>
+            <th scope="col" > Name </th>
+            <th scope="col" class="text-right"> Price </th>
+            <th scope="col" class="text-right"> Change </th>
+            <th scope="col" class="text-right"> Opening </th>
+            <th scope="col" class="text-right"> Max. </th>
+            <th scope="col" class="text-right"> Min </th>
+            <th scope="col" class="text-right"> Turnover(pcs) </th>
+            <th scope="col" class="text-right"> Turnover(PLN) </th>
+        </tr>
+
+        {% for share in shares %}
+        <tr>
+            <td scope="row"> {{ share.stockName }} </td>
+            <td class="text-right">{{ share.price }}</td>
+            {% if share.change > 0 %}
+            <td class="text-right"><font color="green"> {{ share.change }}</font></td>
+            {% elif share.change < 0 %}
+            <td class="text-right"><font color="red"> {{ share.change }}</font></td>
+            {% else %}
+            <td class="text-right">{{ share.change }}</td>
+            {% endif %}
+            <td class="text-right">{{ share.opening }}</td>
+            <td class="text-right">{{ share.min_v }}</td>
+            <td class="text-right">{{ share.max_v }}</td>
+            <td class="text-right">{{ share.trading_pcs }}</td>
+            <td class="text-right">{{ share.trading_px }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    {% else %}
+    <form method="post", action="{{ url_for('update') }}">
+    {{ checkForm.hidden_tag() }}
+    <table class="table table-hover" >
+        <tr>
+            <th scope="col" > Name </th>
+            <th scope="col" class="text-right"> Price </th>
+            <th scope="col" class="text-right"> Change </th>
+            <th scope="col" class="text-right"> Opening </th>
+            <th scope="col" class="text-right"> Max. </th>
+            <th scope="col" class="text-right"> Min </th>
+            <th scope="col" class="text-right"> Turnover(pcs) </th>
+            <th scope="col" class="text-right"> Turnover(PLN) </th>
+            <th scope="col" class="text-center">{{ checkForm.submitCheck() }}</th>
+        </tr>
+
+        {% for share in shares %}
+        <tr>
+            <td scope="row"><a href="{{ url_for('statistics', sharesName = share.stockName ) }}">{{ share.stockName }} </a></td>
+            <td class="text-right">{{ share.price }}</td>
+            {% if share.change > 0 %}
+            <td class="text-right"><font color="green"> {{ share.change }}</font></td>
+            {% elif share.change < 0 %}
+            <td class="text-right"><font color="red"> {{ share.change }}</font></td>
+            {% else %}
+            <td class="text-right">{{ share.change }}</td>
+            {% endif %}
+            <td class="text-right">{{ share.opening }}</td>
+            <td class="text-right">{{ share.min_v }}</td>
+            <td class="text-right">{{ share.max_v }}</td>
+            <td class="text-right">{{ share.trading_pcs }}</td>
+            <td class="text-right">{{ share.trading_px }}</td>
+            {% for usershare in usershares if share.stockName == usershare.stockName %}
+                <td class="text-center">{{ checkForm.check(value = share.stockName, disabled = 'true', checked = 'true') }}</td>
+            {% else %}
+                <td class="text-center">{{ checkForm.check(value = share.stockName) }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    </form>
+    {% endif %}
+
+
+{% endblock %}

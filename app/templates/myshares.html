@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block app_content %}
+
+    <form method="POST", action="">
+    {{ indexForm.hidden_tag() }}
+    {{ indexForm.date() }}
+    {{ indexForm.submitDate() }}
+    </form>
+
+    <h1>HI {{ user.username }}</h1>
+     <form method="post", action="{{ url_for('remove') }}">
+    {{ checkForm.hidden_tag() }}
+    <table class="table table-striped">
+        <tr>
+            <th scope="col" > Name </th>
+            <th scope="col" class="text-right"> Price </th>
+            <th scope="col" class="text-right"> Change </th>
+            <th scope="col" class="text-right"> Opening </th>
+            <th scope="col" class="text-right"> Max. </th>
+            <th scope="col" class="text-right"> Min </th>
+            <th scope="col" class="text-right"> Turnover(pcs) </th>
+            <th scope="col" class="text-right"> Turnover(PLN) </th>
+            <th scope="col" class="text-center">{{ checkForm.submitCheck(value ='Remove') }}</th>
+        </tr>
+
+        {% for share in usershares %}
+        <tr>
+            <td scope="row"><a href="{{ url_for('statistics', sharesName = share.stockName ) }}">{{ share.stockName }} </a></td>
+            <td class="text-right">{{ share.price }}</td>
+            {% if share.change > 0 %}
+            <td class="text-right"><font color="green"> {{ share.change }}</font></td>
+            {% elif share.change < 0 %}
+            <td class="text-right"><font color="red"> {{ share.change }}</font></td>
+            {% else %}
+            <td class="text-right">{{ share.change }}</td>
+            {% endif %}
+            <td class="text-right">{{ share.opening }}</td>
+            <td class="text-right">{{ share.min_v }}</td>
+            <td class="text-right">{{ share.max_v }}</td>
+            <td class="text-right">{{ share.trading_pcs }}</td>
+            <td class="text-right">{{ share.trading_px }}</td>
+            <td class="text-center">{{ checkForm.check(value = share.stockName) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </form>
+
+{% endblock %}

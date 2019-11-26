@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block src_content %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+{% endblock %}
+
+{% block app_content %}
+
+
+    <div id="value"></div>
+
+
+
+    <div id="change" class="col-xs-6 row-xs-2"></div>
+    <div id="turnover" class="col-xs-6"></div>
+
+
+
+
+<script>
+    Highcharts.chart('value', {
+
+    title: {
+        text: ' {{shares[0].stockName}} '
+    },
+
+    subtitle: {
+        text: 'Current Price: {{shares[0].price}} PLN'
+    },
+
+    yAxis: {
+        title: {
+            text: 'PLN'
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    xAxis: {
+        categories: [
+        {% for share in shares|reverse %}
+            '{{ share.date }}',
+        {% endfor %}
+        ]
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+        }
+    },
+
+    series: [{
+        name: 'Price',
+        data: [
+        {% for share in shares|reverse %}
+            {{ share.price }},
+        {% endfor %}
+        ]
+    }, {
+        name: 'Opening',
+        data: [
+        {% for share in shares|reverse %}
+            {{ share.opening }},
+        {% endfor %}
+        ]
+    }, {
+        name: 'Min',
+        data: [
+        {% for share in shares|reverse %}
+            {{ share.min_v }},
+        {% endfor %}
+        ]
+    }, {
+        name: 'Max',
+        data: [
+        {% for share in shares|reverse %}
+            {{ share.max_v }},
+
+        {% endfor %}
+        ]
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+    });
+
+</script>
+<script>
+    Highcharts.chart('change', {
+
+        title: {
+            text: ' {{shares[0].stockName}} '
+        },
+
+        subtitle: {
+            text: 'Price Change'
+        },
+
+        yAxis: {
+            title: {
+                text: '%'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        xAxis: {
+            categories: [
+            {% for share in shares|reverse %}
+                '{{ share.date }}',
+            {% endfor %}
+            ]
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+            }
+        },
+
+        series: [{
+            name: 'Change',
+            data: [
+            {% for share in shares|reverse %}
+                {{ share.change }},
+            {% endfor %}
+            ]
+        }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+    });
+</script>
+
+<script>
+    Highcharts.chart('turnover', {
+
+        title: {
+            text: ' {{shares[0].stockName}} '
+        },
+
+        subtitle: {
+            text: 'Turnover'
+        },
+
+        yAxis: {
+            title: {
+                text: 'PLN/pcs'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        xAxis: {
+            categories: [
+            {% for share in shares|reverse %}
+                '{{ share.date }}',
+            {% endfor %}
+            ]
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+            }
+        },
+
+        series: [{
+            name: 'Turnover(PLN)',
+            data: [
+            {% for share in shares|reverse %}
+                {{ share.trading_px }},
+            {% endfor %}
+            ]
+        },
+        {
+            name: 'Turnover(pcs)',
+            data: [
+            {% for share in shares|reverse %}
+                {{ share.trading_pcs }},
+            {% endfor %}
+            ]
+        }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+    });
+</script>
+
+
+
+{% endblock %}
